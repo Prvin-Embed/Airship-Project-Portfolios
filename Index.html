@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Showcase: GNVR Airship Propulsion & Control System</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to enhance the page */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .airship-hotspot {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            fill: rgba(239, 68, 68, 0.7); /* Red hotspot color */
+            stroke: #ffffff;
+            stroke-width: 2px;
+        }
+        .airship-hotspot:hover {
+            fill: rgba(255, 0, 0, 1);
+            transform: scale(1.2);
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 24px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(-20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-3xl font-bold text-gray-900">Project Showcase: GNVR Airship Control System</h1>
+            <p class="text-md text-gray-600">An interactive overview of the propulsion and self-balancing system.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        
+        <!-- Interactive Airship Diagram Section -->
+        <div class="card mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Interactive 15-Meter GNVR Airship Diagram</h2>
+            <p class="text-center text-gray-600 mb-6">Click on the highlighted components to learn more about their function.</p>
+            
+            <!--  -->
+            <div id="airship-container" class="w-full h-auto overflow-hidden">
+                <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                    <!-- Airship Body -->
+                    <path d="M100,150 C100,50 700,50 700,150 S100,250 100,150 Z" fill="#E0E7FF" stroke="#4F46E5" stroke-width="2"/>
+                    <!-- Stabilizers (Fins) -->
+                    <path d="M680,150 L750,100 L750,200 Z" fill="#C7D2FE" stroke="#4F46E5" stroke-width="1.5"/>
+                    <path d="M150,150 C180,120 180,180 150,150 L100,130 L100,170 Z" transform="translate(540,0) rotate(90 150 150)" fill="#C7D2FE" stroke="#4F46E5" stroke-width="1.5"/>
+                     <path d="M150,150 C180,120 180,180 150,150 L100,130 L100,170 Z" transform="translate(540,-295) rotate(-90 150 150)" fill="#C7D2FE" stroke="#4F46E5" stroke-width="1.5"/>
+                    <!-- Gondola -->
+                    <rect x="300" y="220" width="200" height="40" rx="10" fill="#A5B4FC" stroke="#4F46E5" stroke-width="1.5"/>
+                    
+                    <!-- Interactive Hotspots -->
+                    <circle id="propulsion" class="airship-hotspot" cx="250" cy="190" r="15" />
+                    <circle id="stabilizer" class="airship-hotspot" cx="720" cy="150" r="15" />
+                    <circle id="avionics" class="airship-hotspot" cx="400" cy="235" r="15" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Technical Deep Dive: Self-Balancing System -->
+        <div class="card mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Technical Deep Dive: The Self-Balancing System</h2>
+            <p class="text-gray-600 mb-6">
+                The core of the control system is its ability to self-balance in response to external forces like wind. This is achieved by processing real-time data from an Inertial Measurement Unit (IMU) containing a gyroscope and an accelerometer. The microcontroller uses this data to actuate the propulsion and stabilizer systems, maintaining stable flight. Below are simulated charts showing the system correcting a disturbance.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-medium mb-2 text-center">Gyroscope Data (Rotational Stability)</h3>
+                    <canvas id="gyroChart"></canvas>
+                </div>
+                <div>
+                    <h3 class="text-xl font-medium mb-2 text-center">Accelerometer Data (Linear Motion)</h3>
+                    <canvas id="accelChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Potential of Aerostat & Airship Technology -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-4">The Future Potential of Lighter-Than-Air (LTA) Technology</h2>
+             <p class="text-gray-600 mb-6">
+                Aerostats and airships represent a cost-effective and environmentally friendly frontier in aviation. Their ability to remain stationary for long periods and carry heavy payloads makes them ideal for a wide range of applications, from telecommunications to disaster relief, often at a fraction of the cost of traditional satellites or aircraft.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                 <div>
+                    <h3 class="text-xl font-medium mb-2">Key Advantages Over Alternatives</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li><b>Persistent Surveillance:</b> Unmatched loiter time compared to drones or planes.</li>
+                        <li><b>Lower Operational Cost:</b> Significantly cheaper than launching and maintaining satellites.</li>
+                        <li><b>Heavy Lift Capability:</b> Can transport oversized cargo to remote locations without runways.</li>
+                        <li><b>Eco-Friendly:</b> Minimal carbon footprint due to buoyancy-based lift.</li>
+                    </ul>
+                </div>
+                <div>
+                     <h3 class="text-xl font-medium mb-2 text-center">Cost Comparison: Surveillance Platforms</h3>
+                    <canvas id="potentialChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-8">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p>&copy; 2025 Parveen Kumar | Project Showcase. Built to supplement my professional resume.</p>
+        </div>
+    </footer>
+    
+    <!-- Modal Structure -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-4">Component Details</h2>
+            <p id="modalText">Detailed information will appear here.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- Modal Interaction Logic ---
+        const modal = document.getElementById('infoModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalText = document.getElementById('modalText');
+        const closeButton = document.querySelector('.close-button');
+
+        const componentInfo = {
+            propulsion: {
+                title: 'Vector-Thrust Propulsion System',
+                text: 'The airship is equipped with two electric, vector-thrust propulsion units. These motors can be independently controlled and rotated, providing precise maneuverability for forward, reverse, and rotational movements. The control algorithm I developed adjusts the thrust and angle of each motor based on gyro feedback to counteract roll and yaw disturbances, ensuring a stable flight path.'
+            },
+            stabilizer: {
+                title: 'Active Stabilizer Fins',
+                text: 'The aerodynamic fins at the rear are not static. They are active control surfaces, similar to those on an airplane. Actuators adjust the angle of these fins to provide fine-tuned pitch and yaw control, crucial for maintaining altitude and heading, especially during windy conditions or when hovering in a fixed position.'
+            },
+            avionics: {
+                title: 'Central Avionics & Control Unit',
+                text: 'Located in the gondola, this is the brain of the airship. It houses the STM32 microcontroller, the IMU (Gyro & Accelerometer), GPS module, barometric altimeter, and the LoRa communication module. My firmware processes all sensor inputs and executes the control logic for the propulsion and stabilizer systems, while also transmitting telemetry data via MQTT.'
+            }
+        };
+
+        document.querySelectorAll('.airship-hotspot').forEach(hotspot => {
+            hotspot.addEventListener('click', (event) => {
+                const info = componentInfo[event.target.id];
+                if (info) {
+                    modalTitle.textContent = info.title;
+                    modalText.textContent = info.text;
+                    modal.style.display = 'block';
+                }
+            });
+        });
+
+        closeButton.onclick = () => {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // --- Chart.js Visualization Logic ---
+        // 1. Gyroscope Chart
+        const gyroCtx = document.getElementById('gyroChart').getContext('2d');
+        new Chart(gyroCtx, {
+            type: 'line',
+            data: {
+                labels: ['T+0', 'T+1s', 'T+2s', 'T+3s', 'T+4s', 'T+5s', 'T+6s'],
+                datasets: [{
+                    label: 'Pitch Disturbance',
+                    data: [0, 0, 15, 8, 2, 0, 0],
+                    borderColor: 'rgb(239, 68, 68)',
+                    tension: 0.3,
+                    fill: false,
+                }, {
+                    label: 'System Correction',
+                    data: [0, 0, -2, -10, -5, -1, 0],
+                    borderColor: 'rgb(59, 130, 246)',
+                    tension: 0.3,
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: false },
+                    tooltip: { mode: 'index', intersect: false },
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Degrees (°)' }
+                    }
+                }
+            }
+        });
+
+        // 2. Accelerometer Chart
+        const accelCtx = document.getElementById('accelChart').getContext('2d');
+        new Chart(accelCtx, {
+            type: 'line',
+            data: {
+                labels: ['T+0', 'T+1s', 'T+2s', 'T+3s', 'T+4s', 'T+5s', 'T+6s'],
+                datasets: [{
+                    label: 'Z-Axis Force (Wind Gust)',
+                    data: [9.8, 9.8, 12.5, 11, 10, 9.8, 9.8],
+                    borderColor: 'rgb(234, 179, 8)',
+                    tension: 0.3,
+                    fill: false,
+                }, {
+                    label: 'Y-Axis Correction Thrust',
+                    data: [0, 0, -1.5, -1, -0.5, 0, 0],
+                    borderColor: 'rgb(34, 197, 94)',
+                    tension: 0.3,
+                    fill: false,
+                }]
+            },
+            options: {
+                 responsive: true,
+                plugins: {
+                    title: { display: false },
+                    tooltip: { mode: 'index', intersect: false },
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Force (m/s²)' }
+                    }
+                }
+            }
+        });
+
+        // 3. Potential/Market Chart
+        const potentialCtx = document.getElementById('potentialChart').getContext('2d');
+        new Chart(potentialCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Aerostat', 'Satellite', 'Aircraft (Drone/Plane)'],
+                datasets: [{
+                    label: 'Estimated Annual Cost (in millions USD)',
+                    data: [0.5, 10, 3],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(239, 68, 68, 0.7)',
+                        'rgba(234, 179, 8, 0.7)',
+                    ],
+                    borderColor: [
+                        'rgb(59, 130, 246)',
+                        'rgb(239, 68, 68)',
+                        'rgb(234, 179, 8)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+    </script>
+
+</body>
+</html>
