@@ -1,331 +1,772 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Showcase: GNVR Airship Propulsion & Control System</title>
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js for data visualization -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom Google Font -->
+    <title>Embedded Systems Engineer | LTA & Aerostat Architecture</title>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        aeroblue: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            900: '#0c4a6e',
+                        },
+                        defense: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M0 0h40v40H0V0zm39 39V1H1v38h38z\" fill=\"%23334155\" fill-opacity=\"0.1\" fill-rule=\"evenodd\"/%3E%3C/svg%3E')",
+                        'grid-pattern-light': "url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M0 0h40v40H0V0zm39 39V1H1v38h38z\" fill=\"%23cbd5e1\" fill-opacity=\"0.3\" fill-rule=\"evenodd\"/%3E%3C/svg%3E')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        /* Custom styles to enhance the page */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .light ::-webkit-scrollbar-track { background: #f8fafc; }
+        .light ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+
+        /* Reveal Animation Classes */
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* Interactive Hotspot Pulse */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
         }
-        .airship-hotspot {
-            cursor: pointer;
-            transition: all 0.3s ease;
-            fill: rgba(239, 68, 68, 0.7); /* Red hotspot color */
-            stroke: #ffffff;
-            stroke-width: 2px;
-        }
-        .airship-hotspot:hover {
-            fill: rgba(255, 0, 0, 1);
-            transform: scale(1.2);
-        }
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 50;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-            -webkit-backdrop-filter: blur(5px);
-            backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 24px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(-20px);}
-            to {opacity: 1; transform: translateY(0);}
-        }
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+        .hotspot-pulse { animation: pulse-ring 2s infinite; }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-slate-50 text-slate-900 dark:bg-defense-950 dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-aeroblue-500/30 selection:text-aeroblue-400">
 
-    <!-- Header Section -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-6 py-4">
-            <h1 class="text-3xl font-bold text-gray-900">Project Showcase: GNVR Airship Control System</h1>
-            <p class="text-md text-gray-600">An interactive overview of the propulsion and self-balancing system.</p>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-defense-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <svg class="w-6 h-6 text-aeroblue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.058 3.41c-2.432-1.39-5.682-1.39-8.115 0-2.433 1.39-2.433 3.64 0 5.03l4.057 2.32m4.058-7.35l-4.058 2.32m4.058-2.32v4.64m0 0l-4.058 2.32m4.058-2.32c2.433 1.39 2.433 3.64 0 5.03m-8.115-5.03v4.64m0-4.64l4.058 2.32m-4.058 2.32c-2.432 1.39-5.682 1.39-8.115 0-2.433-1.39-2.433-3.64 0-5.03"></path></svg>
+                    <span class="font-mono font-bold text-sm tracking-tight text-slate-900 dark:text-white">PARVEEN_KUMAR</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-sm font-medium hover:text-aeroblue-500 transition-colors">About</a>
+                    <a href="#reference" class="text-sm font-medium hover:text-aeroblue-500 transition-colors">Platform</a>
+                    <a href="#architecture" class="text-sm font-medium hover:text-aeroblue-500 transition-colors">Architecture</a>
+                    <a href="#control" class="text-sm font-medium hover:text-aeroblue-500 transition-colors">Control Systems</a>
+                    <a href="#contribution" class="text-sm font-medium text-aeroblue-500 hover:text-aeroblue-400 transition-colors">My Focus</a>
+                </div>
+                <div class="flex items-center">
+                    <button id="theme-toggle" class="p-2 rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" aria-label="Toggle Dark Mode">
+                        <!-- Sun icon for dark mode -->
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <!-- Moon icon for light mode -->
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                </div>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
-        
-        <!-- Interactive Airship Diagram Section -->
-        <div class="card mb-8">
-            <h2 class="text-2xl font-semibold mb-4 text-center">Interactive 15-Meter GNVR Airship Diagram</h2>
-            <p class="text-center text-gray-600 mb-6">Click on the highlighted components to learn more about their function.</p>
-            
-            <!--  -->
-            <div id="airship-container" class="w-full h-auto overflow-hidden">
-                <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" class="w-full">
-                    <!-- Airship Body -->
-                    <path d="M100,150 C100,50 700,50 700,150 S100,250 100,150 Z" fill="#E0E7FF" stroke="#4F46E5" stroke-width="2"/>
-                    <!-- Stabilizers (Fins) -->
-                    <path d="M680,150 L750,100 L750,200 Z" fill="#C7D2FE" stroke="#4F46E5" stroke-width="1.5"/>
-                    <path d="M150,150 C180,120 180,180 150,150 L100,130 L100,170 Z" transform="translate(540,0) rotate(90 150 150)" fill="#C7D2FE" stroke="#4F46E5" stroke-width="1.5"/>
-                     <path d="M150,150 C180,120 180,180 150,150 L100,130 L100,170 Z" transform="translate(540,-295) rotate(-90 150 150)" fill="#C7D2FE" stroke="#4F46E5" stroke-width="1.5"/>
-                    <!-- Gondola -->
-                    <rect x="300" y="220" width="200" height="40" rx="10" fill="#A5B4FC" stroke="#4F46E5" stroke-width="1.5"/>
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-grid-pattern-light dark:bg-grid-pattern">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50 dark:to-defense-950 pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-aeroblue-900/10 dark:bg-aeroblue-900/30 border border-aeroblue-500/20 text-aeroblue-600 dark:text-aeroblue-400 text-xs font-mono mb-6">
+                        <span class="w-2 h-2 rounded-full bg-aeroblue-500 animate-pulse"></span>
+                        PARVEEN KUMAR | EMBEDDED SOFTWARE ENGINEER
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
+                        Aerostat Control, <br />
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-aeroblue-500 to-cyan-300">Payload Integration</span> <br />
+                        & LTA Systems.
+                    </h1>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-xl leading-relaxed">
+                        Technical showcase of embedded systems, avionics integration, and telemetry architecture for elevated awareness platforms. Inspired by real strategic tethered aerostat architectures such as the TCOM 74M.
+                    </p>
                     
-                    <!-- Interactive Hotspots -->
-                    <circle id="propulsion" class="airship-hotspot" cx="250" cy="190" r="15" />
-                    <circle id="stabilizer" class="airship-hotspot" cx="720" cy="150" r="15" />
-                    <circle id="avionics" class="airship-hotspot" cx="400" cy="235" r="15" />
-                </svg>
-            </div>
-        </div>
+                    <div class="flex flex-wrap gap-3 mb-8 font-mono text-xs">
+                        <span class="px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">Persistent Surveillance</span>
+                        <span class="px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">Tethered Platform</span>
+                        <span class="px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">Multi-Sensor Payloads</span>
+                        <span class="px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">30-Day Endurance Class</span>
+                    </div>
 
-        <!-- Technical Deep Dive: Self-Balancing System -->
-        <div class="card mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Technical Deep Dive: The Self-Balancing System</h2>
-            <p class="text-gray-600 mb-6">
-                The core of the control system is its ability to self-balance in response to external forces like wind. This is achieved by processing real-time data from an Inertial Measurement Unit (IMU) containing a gyroscope and an accelerometer. The microcontroller uses this data to actuate the propulsion and stabilizer systems, maintaining stable flight. Below are simulated charts showing the system correcting a disturbance.
-            </p>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-xl font-medium mb-2 text-center">Gyroscope Data (Rotational Stability)</h3>
-                    <canvas id="gyroChart"></canvas>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#architecture" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-aeroblue-600 hover:bg-aeroblue-500 transition-colors shadow-lg shadow-aeroblue-500/20">
+                            Explore System Architecture
+                        </a>
+                        <a href="#contribution" class="inline-flex justify-center items-center px-6 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium rounded-md text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                            View Engineering Profile
+                        </a>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-xl font-medium mb-2 text-center">Accelerometer Data (Linear Motion)</h3>
-                    <canvas id="accelChart"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Potential of Aerostat & Airship Technology -->
-        <div class="card">
-            <h2 class="text-2xl font-semibold mb-4">The Future Potential of Lighter-Than-Air (LTA) Technology</h2>
-             <p class="text-gray-600 mb-6">
-                Aerostats and airships represent a cost-effective and environmentally friendly frontier in aviation. Their ability to remain stationary for long periods and carry heavy payloads makes them ideal for a wide range of applications, from telecommunications to disaster relief, often at a fraction of the cost of traditional satellites or aircraft.
-            </p>
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                 <div>
-                    <h3 class="text-xl font-medium mb-2">Key Advantages Over Alternatives</h3>
-                    <ul class="list-disc list-inside text-gray-700 space-y-2">
-                        <li><b>Persistent Surveillance:</b> Unmatched loiter time compared to drones or planes.</li>
-                        <li><b>Lower Operational Cost:</b> Significantly cheaper than launching and maintaining satellites.</li>
-                        <li><b>Heavy Lift Capability:</b> Can transport oversized cargo to remote locations without runways.</li>
-                        <li><b>Eco-Friendly:</b> Minimal carbon footprint due to buoyancy-based lift.</li>
-                    </ul>
-                </div>
-                <div>
-                     <h3 class="text-xl font-medium mb-2 text-center">Cost Comparison: Surveillance Platforms</h3>
-                    <canvas id="potentialChart"></canvas>
-                </div>
-            </div>
-        </div>
 
-    </main>
-    
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-8">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p>&copy; 2025 Parveen Kumar | Project Showcase. Built to supplement my professional resume.</p>
+                <!-- Reference Image Panel -->
+                <div class="relative reveal lg:ml-auto w-full max-w-lg">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-aeroblue-500 to-cyan-400 rounded-xl blur opacity-20"></div>
+                    <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-2xl">
+                        <div class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 py-2 flex items-center gap-2">
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+                                <div class="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+                                <div class="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+                            </div>
+                            <span class="font-mono text-[10px] text-slate-500 ml-2 uppercase tracking-wider">TARS_DEMING_NM.JPG</span>
+                        </div>
+                        <div class="relative aspect-[4/3] bg-slate-100 dark:bg-defense-900 flex items-center justify-center p-4">
+                            <!-- Target Image -->
+                            <img src="https://en.wikipedia.org/wiki/Tethered_Aerostat_Radar_System#/media/File:OAM_Aerostat_TARS_Deming_New_Mexico_(16715553462).jpg" 
+                                 alt="TARS Aerostat in Deming, New Mexico - Reference Platform" 
+                                 class="object-cover w-full h-full rounded-md z-10 relative shadow-md" />
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-800/80 p-4 border-t border-slate-200 dark:border-slate-700">
+                            <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                                <span class="text-aeroblue-500 font-bold">Disclaimer:</span> Reference image/geometry based on TCOM 74M strategic aerostat materials. This portfolio represents conceptual systems engineering capabilities, not proprietary ownership of this specific platform.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
-    
-    <!-- Modal Structure -->
-    <div id="infoModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2 id="modalTitle" class="text-2xl font-bold mb-4">Component Details</h2>
-            <p id="modalText">Detailed information will appear here.</p>
+    </section>
+
+    <!-- Mission Lifecycle flow -->
+    <div class="border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between font-mono text-[11px] md:text-xs text-slate-500 dark:text-slate-400 overflow-x-auto whitespace-nowrap hide-scrollbar gap-8">
+                <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div> DEPLOYMENT</div>
+                <div class="text-slate-300 dark:text-slate-700">→</div>
+                <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div> STABILIZATION & TRIM</div>
+                <div class="text-slate-300 dark:text-slate-700">→</div>
+                <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-aeroblue-500"></div> PAYLOAD POWER UP</div>
+                <div class="text-slate-300 dark:text-slate-700">→</div>
+                <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-aeroblue-500"></div> DATA ACQUISITION</div>
+                <div class="text-slate-300 dark:text-slate-700">→</div>
+                <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div> TELEMETRY RELAY</div>
+                <div class="text-slate-300 dark:text-slate-700">→</div>
+                <div class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div> PERSISTENT STATION-KEEPING</div>
+            </div>
         </div>
     </div>
 
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-slate-50 dark:bg-defense-950">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <h2 class="text-xs font-mono text-aeroblue-500 tracking-widest uppercase mb-3">Professional Focus</h2>
+            <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8">Engineering for Elevated Awareness.</h3>
+            
+            <div class="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 space-y-6 text-lg leading-relaxed border-l-2 border-aeroblue-500/30 pl-6">
+                <p>
+                    I work at the intersection of embedded systems, avionics integration, communication networks, and intelligent aerial platforms. My engineering focus is on translating complex mission requirements—such as multi-sensor ISR (Intelligence, Surveillance, and Reconnaissance)—into robust, fault-tolerant hardware and firmware architectures.
+                </p>
+                <p>
+                    Modern tethered aerostats operate in harsh environments, requiring precise attitude monitoring, persistent high-bandwidth telemetry, and absolute power reliability. Whether I am writing low-level firmware for sensor integration, designing control feedback loops to mitigate wind disturbances, or structuring ground-station communication protocols, my goal is to ensure platform survivability and mission success.
+                </p>
+                <p>
+                    This portfolio provides a technical breakdown of LTA (Lighter-Than-Air) systems architecture. By analyzing the engineering constraints of large-scale platforms, I demonstrate my capability to contribute to the defense, aerospace, and advanced surveillance sectors at a systems level.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reference Platform Section -->
+    <section id="reference" class="py-24 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <h2 class="text-xs font-mono text-aeroblue-500 tracking-widest uppercase mb-3">Industry Context</h2>
+                <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">Strategic Aerostat Reference Platform</h3>
+                <p class="text-slate-600 dark:text-slate-400">
+                    To ground this architectural overview in reality, I use the TCOM 74M as a structural and operational baseline. Large tethered aerostats like the 74M are uniquely suited for persistent surveillance and elevated line-of-sight communications over 30+ day missions.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start reveal">
+                <!-- Specs Panel -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-slate-50 dark:bg-defense-950 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
+                        <h4 class="font-mono text-sm text-slate-900 dark:text-white font-bold mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">REF_SPECS: 74M CLASS</h4>
+                        
+                        <dl class="space-y-4 text-sm">
+                            <div class="flex justify-between items-center">
+                                <dt class="text-slate-500 dark:text-slate-400">Payload Cap.</dt>
+                                <dd class="font-mono text-slate-900 dark:text-slate-200">~7,000–8,500 lbs*</dd>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <dt class="text-slate-500 dark:text-slate-400">Nominal Altitude</dt>
+                                <dd class="font-mono text-slate-900 dark:text-slate-200">10,000 ft (3,000 m)</dd>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <dt class="text-slate-500 dark:text-slate-400">Available Power</dt>
+                                <dd class="font-mono text-slate-900 dark:text-slate-200">70 kVA</dd>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <dt class="text-slate-500 dark:text-slate-400">Endurance</dt>
+                                <dd class="font-mono text-slate-900 dark:text-slate-200">> 30 Days</dd>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <dt class="text-slate-500 dark:text-slate-400">Wind (Op / Surv)</dt>
+                                <dd class="font-mono text-slate-900 dark:text-slate-200">70 kts / 100 kts</dd>
+                            </div>
+                        </dl>
+                        <p class="text-[10px] text-slate-500 mt-4 italic">
+                            *Published materials show payload capacity ranges depending on exact variant/source.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Long-Range Radar</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">COMMS Relay</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">COMINT / ELINT</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Stationary Mooring</span>
+                    </div>
+                </div>
+
+                <!-- Descriptive Panel -->
+                <div class="lg:col-span-8">
+                    <div class="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 text-base">
+                        <h4 class="text-xl font-semibold text-slate-900 dark:text-white mt-0">Why Strategic Platforms Matter</h4>
+                        <p>
+                            Unlike tactical UAVs limited by fuel or battery life, strategic tethered aerostats trade mobility for unparalleled persistence and payload capacity. Utilizing a stationary mooring station due to their massive scale, these systems deploy payloads that exceed 3.5 metric tons to altitudes where the line-of-sight horizon dramatically extends radar and communications ranges.
+                        </p>
+                        <p>
+                            From a systems engineering perspective, the challenge shifts from propulsion and path-planning to <strong>thermal management, uninterrupted power delivery via tether, high-bandwidth fiber-optic data links, and continuous environmental monitoring</strong> to ensure platform stability during extreme weather events over a month-long mission.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive System Architecture -->
+    <section id="architecture" class="py-24 bg-slate-50 dark:bg-defense-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12 reveal">
+                <h2 class="text-xs font-mono text-aeroblue-500 tracking-widest uppercase mb-3">System Blueprint</h2>
+                <h3 class="text-3xl font-bold text-slate-900 dark:text-white">Interactive Architecture Explorer</h3>
+                <p class="text-slate-600 dark:text-slate-400 mt-2">Select a subsystem below to view engineering responsibilities and component details.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 reveal">
+                <!-- Navigation Tabs -->
+                <div class="lg:col-span-4 space-y-2" id="arch-tabs">
+                    <!-- Tabs generated by JS -->
+                </div>
+
+                <!-- Content Panel -->
+                <div class="lg:col-span-8">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 h-full shadow-sm">
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+                            <div class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-aeroblue-500" id="arch-icon">
+                                <!-- SVG Icon injected by JS -->
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-900 dark:text-white" id="arch-title">Select a subsystem</h4>
+                        </div>
+                        <div class="prose prose-slate dark:prose-invert text-sm max-w-none text-slate-600 dark:text-slate-400" id="arch-content">
+                            <!-- Content injected by JS -->
+                        </div>
+                        
+                        <!-- Tech stack / concepts chips -->
+                        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/50" id="arch-tags-container" style="display:none;">
+                            <h5 class="text-xs font-mono text-slate-500 dark:text-slate-500 mb-3 uppercase tracking-wider">Engineering Focus Areas</h5>
+                            <div class="flex flex-wrap gap-2" id="arch-tags">
+                                <!-- Tags injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flight Control & Stabilization -->
+    <section id="control" class="py-24 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 relative overflow-hidden">
+        <!-- Background elements -->
+        <div class="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-aeroblue-500/5 blur-3xl pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center reveal">
+                <div>
+                    <h2 class="text-xs font-mono text-aeroblue-500 tracking-widest uppercase mb-3">Dynamics</h2>
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-6">Flight Control & Stabilization</h3>
+                    <div class="prose prose-slate dark:prose-invert text-slate-600 dark:text-slate-400">
+                        <p>
+                            Unlike free-flight airships, tethered aerostats face unique station-keeping challenges. The tether acts as a massive physical constraint, meaning wind response behavior relies entirely on platform geometry, aerodynamic surfaces (fins), and active payload weight distribution rather than active propulsion.
+                        </p>
+                        <p>
+                            From an embedded systems perspective, stability requires high-frequency IMU-driven attitude monitoring. We track pitch, roll, and yaw disturbance sensing to feed control logic. If an aerostat pitches severely, the avionics computer must log the variance, ensure sensor gimbals compensate to maintain target lock, and monitor tether tension metrics.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-8 grid grid-cols-2 gap-4">
+                        <div class="p-4 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-defense-950">
+                            <div class="text-aeroblue-500 mb-2 font-mono text-xs">SENSOR_IN</div>
+                            <h5 class="font-bold text-slate-900 dark:text-slate-200 text-sm">6-DOF IMU</h5>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">High-polling rate accelerometer/gyro array for attitude state.</p>
+                        </div>
+                        <div class="p-4 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-defense-950">
+                            <div class="text-aeroblue-500 mb-2 font-mono text-xs">LOGIC_OUT</div>
+                            <div class="font-bold text-slate-900 dark:text-slate-200 text-sm">Disturbance Rejection</div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Gimbal offset commands & telemetry alerts for ground crew.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart.js Simulation Container -->
+                <div class="bg-slate-50 dark:bg-defense-950 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-lg">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white font-mono">SIM: WIND_GUST_RESPONSE</h4>
+                            <p class="text-xs text-slate-500">Pitch Angle Deviation vs. Payload Gimbal Correction</p>
+                        </div>
+                        <div class="flex gap-2 text-[10px] font-mono">
+                            <span class="flex items-center gap-1 text-slate-600 dark:text-slate-300"><div class="w-2 h-2 rounded-full bg-slate-400"></div> Hull Pitch</span>
+                            <span class="flex items-center gap-1 text-aeroblue-600 dark:text-aeroblue-400"><div class="w-2 h-2 rounded-full bg-aeroblue-500"></div> Gimbal LOS</span>
+                        </div>
+                    </div>
+                    <div class="relative h-64 w-full">
+                        <canvas id="stabilizationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payload & Mission Systems -->
+    <section class="py-24 bg-slate-50 dark:bg-defense-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-xs font-mono text-aeroblue-500 tracking-widest uppercase mb-3">Integration</h2>
+                <h3 class="text-3xl font-bold text-slate-900 dark:text-white">Payload & Mission Systems</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-aeroblue-500/50 transition-colors group overflow-hidden flex flex-col">
+                    <div class="h-36 w-full relative overflow-hidden bg-slate-100 dark:bg-slate-800">
+                        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800" alt="Long-Range Radar Array" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 opacity-90 dark:opacity-80 mix-blend-luminosity hover:mix-blend-normal">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Long-Range Radar</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Integration of heavy phased-array or rotating radar systems. Requires managing massive power draw, liquid cooling interfaces, and high-speed fiber data links to ground processing units.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-aeroblue-500/50 transition-colors group overflow-hidden flex flex-col">
+                    <div class="h-36 w-full relative overflow-hidden bg-slate-100 dark:bg-slate-800">
+                        <img src="https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc?auto=format&fit=crop&q=80&w=800" alt="EO/IR Turret" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 opacity-90 dark:opacity-80 mix-blend-luminosity hover:mix-blend-normal">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">EO/IR Optics</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Electro-Optical and Infrared multi-spectral turrets. Embedded focus involves gimbal stabilization logic, video encoding (H.265), and managing latency over the tether network.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-aeroblue-500/50 transition-colors group overflow-hidden flex flex-col">
+                    <div class="h-36 w-full relative overflow-hidden bg-slate-100 dark:bg-slate-800">
+                        <img src="https://images.unsplash.com/photo-1544605427-46487e384813?auto=format&fit=crop&q=80&w=800" alt="Communications Relay Antenna" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 opacity-90 dark:opacity-80 mix-blend-luminosity hover:mix-blend-normal">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">COMMS Relay</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Serving as a low-earth alternative to satellites. Engineering challenges include RF interference mitigation, antenna placement to avoid hull shadowing, and multi-band transceiver control.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-aeroblue-500/50 transition-colors group overflow-hidden flex flex-col">
+                    <div class="h-36 w-full relative overflow-hidden bg-slate-100 dark:bg-slate-800">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800" alt="SIGINT Electronics" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 opacity-90 dark:opacity-80 mix-blend-luminosity hover:mix-blend-normal">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">SIGINT / ELINT</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Signals Intelligence architectures requiring ultra-low noise power rails, massive data logging, and secure edge-computing nodes inside the payload bay before telemetry downlink.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Engineering Contribution (Recruiter Focus) -->
+    <section id="contribution" class="py-24 bg-slate-50 dark:bg-defense-950 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <h2 class="text-xs font-mono text-aeroblue-500 tracking-widest uppercase mb-3 text-center">Value Proposition</h2>
+            <h3 class="text-3xl font-bold text-slate-900 dark:text-white text-center mb-12">How I Contribute as an LTA Systems Engineer</h3>
+            
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 shadow-sm">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Column 1 -->
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-aeroblue-100 dark:bg-aeroblue-900/40 flex items-center justify-center text-aeroblue-600 dark:text-aeroblue-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Embedded Firmware for Mission Systems</h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Writing C/C++ firmware for avionics controllers, ensuring deterministic execution of critical platform safety checks.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-aeroblue-100 dark:bg-aeroblue-900/40 flex items-center justify-center text-aeroblue-600 dark:text-aeroblue-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Telemetry & Communication Architecture</h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Structuring robust protocols (CAN, Ethernet, Serial over Fiber) between the airborne payload bay and ground control.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-aeroblue-100 dark:bg-aeroblue-900/40 flex items-center justify-center text-aeroblue-600 dark:text-aeroblue-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Sensor & Payload Integration</h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Interfacing third-party hardware (radar, EO/IR) with platform power and data buses. Handling custom protocol translation.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- Column 2 -->
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-aeroblue-100 dark:bg-aeroblue-900/40 flex items-center justify-center text-aeroblue-600 dark:text-aeroblue-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Control System Logic</h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Implementing stabilization and filtering algorithms (Kalman filters, PID loops) for disturbance rejection and gimbal pointing.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-aeroblue-100 dark:bg-aeroblue-900/40 flex items-center justify-center text-aeroblue-600 dark:text-aeroblue-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Field Deployment & Debugging</h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Hands-on mentality. Comfortable transitioning from lab-based HIL (Hardware-in-the-Loop) simulation to live flight-line validation.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-aeroblue-100 dark:bg-aeroblue-900/40 flex items-center justify-center text-aeroblue-600 dark:text-aeroblue-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Technical Communication</h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Translating ambiguous mission needs into rigorous interface control documents (ICDs) and clean system architecture diagrams.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800 flex justify-center">
+                    <a href="mailto:Parveensah21@gmail.com" class="bg-aeroblue-600 hover:bg-aeroblue-500 text-white px-8 py-3 rounded-md font-medium text-sm transition-colors shadow-lg shadow-aeroblue-500/20">
+                        Contact for Engineering Roles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-defense-950 border-t border-slate-200 dark:border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex justify-center md:justify-start mb-6 md:mb-0">
+                    <div>
+                        <span class="font-mono font-bold text-lg tracking-tight text-slate-900 dark:text-white block">Parveen Kumar</span>
+                        <span class="text-sm text-slate-500 block mt-1">Developer for Embedded Software | +91 8929635960</span>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-6">
+                    <a href="mailto:Parveensah21@gmail.com" class="text-slate-400 hover:text-aeroblue-500" title="Email">
+                        <span class="sr-only">Email</span>
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/parveen-kumar-2a6ab095/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-aeroblue-500" title="LinkedIn">
+                        <span class="sr-only">LinkedIn</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="https://github.com/Prvin-Embed" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-aeroblue-500" title="GitHub">
+                        <span class="sr-only">GitHub</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-slate-400 hover:text-aeroblue-500">
+                        <span class="sr-only">Resume / CV</span>
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+                <p>&copy; 2026 Engineer Portfolio. All rights reserved.</p>
+                <p class="mt-2 md:mt-0">Educational / Portfolio Use Only. Not affiliated with TCOM, L.P.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Vanilla JS Logic -->
     <script>
-        // --- Modal Interaction Logic ---
-        const modal = document.getElementById('infoModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalText = document.getElementById('modalText');
-        const closeButton = document.querySelector('.close-button');
+        // --- Dark/Light Mode Toggle ---
+        const htmlElement = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
 
-        const componentInfo = {
-            propulsion: {
-                title: 'Vector-Thrust Propulsion System',
-                text: 'The airship is equipped with two electric, vector-thrust propulsion units. These motors can be independently controlled and rotated, providing precise maneuverability for forward, reverse, and rotational movements. The control algorithm I developed adjusts the thrust and angle of each motor based on gyro feedback to counteract roll and yaw disturbances, ensuring a stable flight path.'
-            },
-            stabilizer: {
-                title: 'Active Stabilizer Fins',
-                text: 'The aerodynamic fins at the rear are not static. They are active control surfaces, similar to those on an airplane. Actuators adjust the angle of these fins to provide fine-tuned pitch and yaw control, crucial for maintaining altitude and heading, especially during windy conditions or when hovering in a fixed position.'
-            },
-            avionics: {
-                title: 'Central Avionics & Control Unit',
-                text: 'Located in the gondola, this is the brain of the airship. It houses the STM32 microcontroller, the IMU (Gyro & Accelerometer), GPS module, barometric altimeter, and the LoRa communication module. My firmware processes all sensor inputs and executes the control logic for the propulsion and stabilizer systems, while also transmitting telemetry data via MQTT.'
-            }
-        };
-
-        document.querySelectorAll('.airship-hotspot').forEach(hotspot => {
-            hotspot.addEventListener('click', (event) => {
-                const info = componentInfo[event.target.id];
-                if (info) {
-                    modalTitle.textContent = info.title;
-                    modalText.textContent = info.text;
-                    modal.style.display = 'block';
-                }
-            });
-        });
-
-        closeButton.onclick = () => {
-            modal.style.display = 'none';
-        }
-
-        window.onclick = (event) => {
-            if (event.target == modal) {
-                modal.style.display = 'none';
+        function updateIcons() {
+            if (htmlElement.classList.contains('dark')) {
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            } else {
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
             }
         }
         
-        // --- Chart.js Visualization Logic ---
-        // 1. Gyroscope Chart
-        const gyroCtx = document.getElementById('gyroChart').getContext('2d');
-        new Chart(gyroCtx, {
-            type: 'line',
-            data: {
-                labels: ['T+0', 'T+1s', 'T+2s', 'T+3s', 'T+4s', 'T+5s', 'T+6s'],
-                datasets: [{
-                    label: 'Pitch Disturbance',
-                    data: [0, 0, 15, 8, 2, 0, 0],
-                    borderColor: 'rgb(239, 68, 68)',
-                    tension: 0.3,
-                    fill: false,
-                }, {
-                    label: 'System Correction',
-                    data: [0, 0, -2, -10, -5, -1, 0],
-                    borderColor: 'rgb(59, 130, 246)',
-                    tension: 0.3,
-                    fill: false,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: { display: false },
-                    tooltip: { mode: 'index', intersect: false },
-                },
-                scales: {
-                    y: {
-                        title: { display: true, text: 'Degrees (°)' }
-                    }
-                }
+        // Default to dark mode is already set on the HTML class
+        updateIcons();
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            updateIcons();
+            // Re-render chart to match theme colors if needed
+            if (window.stabilizationChartInstance) {
+                const isDark = htmlElement.classList.contains('dark');
+                window.stabilizationChartInstance.options.scales.x.grid.color = isDark ? '#1e293b' : '#e2e8f0';
+                window.stabilizationChartInstance.options.scales.y.grid.color = isDark ? '#1e293b' : '#e2e8f0';
+                window.stabilizationChartInstance.update();
             }
         });
 
-        // 2. Accelerometer Chart
-        const accelCtx = document.getElementById('accelChart').getContext('2d');
-        new Chart(accelCtx, {
-            type: 'line',
-            data: {
-                labels: ['T+0', 'T+1s', 'T+2s', 'T+3s', 'T+4s', 'T+5s', 'T+6s'],
-                datasets: [{
-                    label: 'Z-Axis Force (Wind Gust)',
-                    data: [9.8, 9.8, 12.5, 11, 10, 9.8, 9.8],
-                    borderColor: 'rgb(234, 179, 8)',
-                    tension: 0.3,
-                    fill: false,
-                }, {
-                    label: 'Y-Axis Correction Thrust',
-                    data: [0, 0, -1.5, -1, -0.5, 0, 0],
-                    borderColor: 'rgb(34, 197, 94)',
-                    tension: 0.3,
-                    fill: false,
-                }]
-            },
-            options: {
-                 responsive: true,
-                plugins: {
-                    title: { display: false },
-                    tooltip: { mode: 'index', intersect: false },
-                },
-                scales: {
-                    y: {
-                        title: { display: true, text: 'Force (m/s²)' }
-                    }
+        // --- Scroll Reveal Animation ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
                 }
             }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger once on load
+
+        // --- Interactive System Architecture Logic ---
+        const subsystems = [
+            {
+                id: 'envelope',
+                title: 'Envelope & Hull',
+                icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>',
+                content: '<p>The aerodynamically shaped fabric hull that provides lift via helium containment. From a systems perspective, we monitor internal envelope pressure and helium purity using distributed differential pressure sensors communicating via I2C or CAN to the main avionics node.</p> <p>Maintaining shape is critical for wind resistance. Automated blowers (ballonets) are triggered by firmware logic to maintain hull rigidity when external atmospheric pressure changes or during thermal expansion/contraction.</p>',
+                tags: ['I2C / SPI', 'Pressure Transducers', 'Control Loops', 'Environmental Monitoring']
+            },
+            {
+                id: 'payload',
+                title: 'Payload Bay',
+                icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>',
+                content: '<p>The central hub for mission equipment. Strategic platforms feature pressurized or environmentally controlled bays capable of housing ~7,000 lbs of radar or communications gear.</p><p>Engineering focus involves power conditioning (ensuring the 70 kVA supply from the tether is safely stepped down to 28VDC, 115VAC, etc. with minimal noise) and providing gigabit fiber-optic switch infrastructure for raw sensor data.</p>',
+                tags: ['Power Conditioning', 'Fiber Optic Networks', 'Thermal Management', 'EMI Shielding']
+            },
+            {
+                id: 'avionics',
+                title: 'Avionics / Control Node',
+                icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>',
+                content: '<p>The central "brain" running RTOS (Real-Time Operating System) firmware. It aggregates telemetry from all subsystems, handles fault-detection, and executes watchdog resets.</p><p>If tether tension exceeds safety thresholds or wind speeds spike toward the 100-knot survival limit, the avionics node alerts the GCS, powers down non-essential payloads to conserve thermal limits, and prepares for rapid retrieval protocols.</p>',
+                tags: ['C/C++', 'RTOS (FreeRTOS/VxWorks)', 'Watchdog Timers', 'Fault Tolerance']
+            },
+            {
+                id: 'tether',
+                title: 'Tether Link',
+                icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>',
+                content: '<p>A multi-functional umbilical cord carrying high-voltage power, multiple single-mode optical fibers, and serving as the physical anchor. It is highly engineered with Kevlar/Vectran core for tensile strength.</p><p>System monitoring requires high-speed strain gauges at the attachment point. Data links must utilize redundant transceivers to ensure C2 is never lost if a single fiber strand fractures during violent weathervaning.</p>',
+                tags: ['Fiber Optics', 'High Voltage Transmission', 'Strain Gauge ADCs']
+            }
+        ];
+
+        const tabsContainer = document.getElementById('arch-tabs');
+        const archIcon = document.getElementById('arch-icon');
+        const archTitle = document.getElementById('arch-title');
+        const archContent = document.getElementById('arch-content');
+        const archTags = document.getElementById('arch-tags');
+        const archTagsContainer = document.getElementById('arch-tags-container');
+
+        function selectSubsystem(id) {
+            // Update tabs UI
+            document.querySelectorAll('.arch-tab-btn').forEach(btn => {
+                if(btn.dataset.id === id) {
+                    btn.classList.add('bg-white', 'dark:bg-slate-800', 'border-aeroblue-500', 'text-aeroblue-600', 'dark:text-aeroblue-400', 'shadow-sm');
+                    btn.classList.remove('bg-transparent', 'border-transparent', 'text-slate-600', 'dark:text-slate-400');
+                    btn.querySelector('.indicator').classList.remove('opacity-0');
+                } else {
+                    btn.classList.remove('bg-white', 'dark:bg-slate-800', 'border-aeroblue-500', 'text-aeroblue-600', 'dark:text-aeroblue-400', 'shadow-sm');
+                    btn.classList.add('bg-transparent', 'border-transparent', 'text-slate-600', 'dark:text-slate-400');
+                    btn.querySelector('.indicator').classList.add('opacity-0');
+                }
+            });
+
+            // Update content
+            const data = subsystems.find(s => s.id === id);
+            
+            // Add slight fade effect
+            archContent.style.opacity = 0;
+            setTimeout(() => {
+                archIcon.innerHTML = data.icon;
+                archTitle.textContent = data.title;
+                archContent.innerHTML = data.content;
+                
+                if (data.tags && data.tags.length > 0) {
+                    archTagsContainer.style.display = 'block';
+                    archTags.innerHTML = data.tags.map(tag => 
+                        `<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-xs text-slate-700 dark:text-slate-300">${tag}</span>`
+                    ).join('');
+                } else {
+                    archTagsContainer.style.display = 'none';
+                }
+                
+                archContent.style.opacity = 1;
+            }, 150);
+        }
+
+        // Initialize tabs
+        subsystems.forEach((sub, index) => {
+            const btn = document.createElement('button');
+            btn.className = `arch-tab-btn w-full flex items-center justify-between p-4 text-left border-l-2 transition-all duration-200 rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800/50`;
+            btn.dataset.id = sub.id;
+            btn.innerHTML = `
+                <span class="font-bold text-sm">${sub.title}</span>
+                <span class="indicator w-1.5 h-1.5 rounded-full bg-aeroblue-500 transition-opacity"></span>
+            `;
+            btn.addEventListener('click', () => selectSubsystem(sub.id));
+            tabsContainer.appendChild(btn);
         });
 
-        // 3. Potential/Market Chart
-        const potentialCtx = document.getElementById('potentialChart').getContext('2d');
-        new Chart(potentialCtx, {
-            type: 'bar',
+        // Select first by default
+        selectSubsystem(subsystems[0].id);
+
+
+        // --- Chart.js Initialization ---
+        const ctx = document.getElementById('stabilizationChart').getContext('2d');
+        
+        // Generate mock data mimicking wind disturbance and stabilization
+        const timeLabels = Array.from({length: 40}, (_, i) => i);
+        
+        // Hull pitch: slowly varying wave with some random spikes (wind)
+        const hullPitch = timeLabels.map(t => {
+            return Math.sin(t / 4) * 5 + (Math.random() * 4 - 2);
+        });
+        
+        // Gimbal Correction: Inverse of hull pitch with slight delay/smoothing to show active correction keeping LOS at 0
+        const gimbalLOS = hullPitch.map(val => {
+            // Perfect correction would be 0. We add tiny error to look realistic.
+            return (Math.random() * 0.5 - 0.25); 
+        });
+
+        window.stabilizationChartInstance = new Chart(ctx, {
+            type: 'line',
             data: {
-                labels: ['Aerostat', 'Satellite', 'Aircraft (Drone/Plane)'],
-                datasets: [{
-                    label: 'Estimated Annual Cost (in millions USD)',
-                    data: [0.5, 10, 3],
-                    backgroundColor: [
-                        'rgba(59, 130, 246, 0.7)',
-                        'rgba(239, 68, 68, 0.7)',
-                        'rgba(234, 179, 8, 0.7)',
-                    ],
-                    borderColor: [
-                        'rgb(59, 130, 246)',
-                        'rgb(239, 68, 68)',
-                        'rgb(234, 179, 8)',
-                    ],
-                    borderWidth: 1
-                }]
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'Hull Pitch Deviation (°)',
+                        data: hullPitch,
+                        borderColor: '#94a3b8',
+                        backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Gimbal Payload LOS Error (°)',
+                        data: gimbalLOS,
+                        borderColor: '#0ea5e9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
             },
             options: {
-                indexAxis: 'y',
                 responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
                 plugins: {
-                    legend: {
-                        display: false
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { family: 'JetBrains Mono', size: 11 },
+                        bodyFont: { family: 'Inter', size: 12 },
+                        padding: 10,
+                        borderColor: '#334155',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false // Hide time axis for cleaner look
+                    },
+                    y: {
+                        grid: {
+                            color: htmlElement.classList.contains('dark') ? '#1e293b' : '#e2e8f0',
+                        },
+                        ticks: {
+                            font: { family: 'JetBrains Mono', size: 10 },
+                            color: '#64748b'
+                        },
+                        suggestedMin: -10,
+                        suggestedMax: 10
                     }
                 }
             }
         });
 
     </script>
-
 </body>
 </html>
